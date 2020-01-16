@@ -18,13 +18,13 @@ jobs:
       name: Clone llvm-bolt
       with:
         path: llvm/tools/llvm-bolt
-    - name: path llvm
+    - name: patch llvm
       run: cd llvm; patch -p 1 < tools/llvm-bolt/llvm.patch
     - name: build llvm-bolt
       run: |
         mkdir build
         cd build
-        cmake ../llvm -DLLVM_TARGETS_TO_BUILD="X86;AArch64" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON
+        cmake ../llvm -DLLVM_TARGETS_TO_BUILD="X86" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON
         make -j2
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
