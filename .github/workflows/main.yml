@@ -1,0 +1,34 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      name: Clone LLVM
+      with:
+        repository: https://github.com/llvm-mirror/llvm
+        path: llvm
+        ref: f137ed238db11440f03083b1c88b7ffc0f4af65e
+    - uses: actions/checkout@v2
+      name: Clone llvm-bolt
+      with:
+        path: llvm/tools/llvm-bolt
+    - name: path llvm
+      run: cd llvm; patch -p 1 < tools/llvm-bolt/llvm.patch
+    - name: build llvm-bolt
+      run: |
+        mkdir build
+        cd build
+        cmake ../llvm -DLLVM_TARGETS_TO_BUILD="X86;AArch64" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON
+        make -j2
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: bin
+        path: build/bin
+        
