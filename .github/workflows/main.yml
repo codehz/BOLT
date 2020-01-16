@@ -25,10 +25,14 @@ jobs:
         mkdir build
         cd build
         cmake ../llvm -DLLVM_TARGETS_TO_BUILD="X86" -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON
-        make -j2
+        make -j8
+    - name: copy bolt stuff
+      run: |
+        mkdir dist
+        mv build/bin/llvm-bolt* dist
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: bin
-        path: build/bin
+        name: dist
+        path: dist
         
